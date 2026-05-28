@@ -5,7 +5,7 @@ const Adiyeu = require('../models/Adiyeu');
 
 exports.getRapport = async (req, res) => {
   try {
-    const daaraId = req.daaraId;
+    const daaraId = req.user.daara;
 
     const totalKourels = await Kourel.countDocuments({ daara: daaraId });
     const totalMembres = await Membre.countDocuments({ daara: daaraId });

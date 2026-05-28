@@ -1,13 +1,12 @@
-const Kourel = require('../models/Kourel');
+const Kourel = require('../models/kourel');
 
 // Créer un Kourel
 exports.creerKourel = async (req, res) => {
   try {
-    const { nom, type } = req.body;
+    const { nom, description, cotisation, frequence, statut } = req.body;
     const kourel = new Kourel({
-      nom,
-      type,
-      daara: req.daaraId
+      nom, description, cotisation, frequence, statut,
+      daara: req.user.daara
     });
     await kourel.save();
     res.status(201).json({ message: 'Kourel créé ✅', kourel });
@@ -16,11 +15,23 @@ exports.creerKourel = async (req, res) => {
   }
 };
 
-// Lister les Kourels d'un Daara
+// Lister les Kourels
 exports.listerKourels = async (req, res) => {
   try {
-    const kourels = await Kourel.find({ daara: req.daaraId });
+    const kourels = await Kourel.find({ daara: req.user.daara });
     res.json(kourels);
+  } catch (err) {
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+  }
+};
+
+// Modifier un Kourel
+exports.modifierKourel = async (req, res) => {
+  try {
+    const kourel = await Kourel.findByIdAndUpdate(
+      req.params.id, req.body, { new: true }
+    );
+    res.json({ message: 'Kourel modifié ✅', kourel });
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
   }
