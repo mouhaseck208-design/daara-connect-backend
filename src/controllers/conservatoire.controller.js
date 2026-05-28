@@ -1,4 +1,4 @@
-const Conservatoire = require('../models/Conservatoire');
+const Conservatoire = require('../models/conservatoire');
 
 // Créer un groupe conservatoire
 exports.creerGroupe = async (req, res) => {
