@@ -1,14 +1,11 @@
-const Message = require('../models/Message');
+const Message = require('../models/message'); // ← minuscule
 
-// Envoyer un message
 exports.envoyerMessage = async (req, res) => {
   try {
-    const { contenu, auteur, kourel } = req.body;
+    const { texte, auteur, kourel } = req.body;
     const message = new Message({
-      contenu,
-      auteur,
-      kourel,
-      daara: req.daaraId
+      texte, auteur, kourel,
+      daara: req.user.daara  // ← req.user.daara
     });
     await message.save();
     res.status(201).json({ message: 'Message envoyé ✅', data: message });
@@ -17,12 +14,11 @@ exports.envoyerMessage = async (req, res) => {
   }
 };
 
-// Lister les messages d'un Kourel
 exports.listerMessages = async (req, res) => {
   try {
-    const messages = await Message.find({ 
+    const messages = await Message.find({
       kourel: req.params.kourelId,
-      daara: req.daaraId 
+      daara: req.user.daara
     })
     .populate('auteur', 'nom prenom')
     .sort({ createdAt: 1 });
@@ -32,7 +28,6 @@ exports.listerMessages = async (req, res) => {
   }
 };
 
-// Supprimer un message
 exports.supprimerMessage = async (req, res) => {
   try {
     await Message.findByIdAndDelete(req.params.id);
