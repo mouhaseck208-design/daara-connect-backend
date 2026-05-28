@@ -1,6 +1,7 @@
 const Daara = require('../models/Daara');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Membre = require('../models/Membre');
 
 // Créer un nouveau Daara
 exports.registerDaara = async (req, res) => {
@@ -43,6 +44,34 @@ exports.login = async (req, res) => {
     const token = jwt.sign({ id: daara._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
     res.json({ token, daara: { id: daara._id, nom: daara.nom, siege: daara.siege } });
+  } catch (err) {
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+  }
+};
+// Connexion membre par téléphone
+exports.loginMembre = async (req, res) => {
+  try {
+    const { telephone } = req.body;
+    const membre = await Membre.findOne({ telephone });
+    if (!membre) {
+      return res.status(404).json({ message: 'Membre introuvable' });
+    }
+    const token = jwt.sign(
+      { id: membre._id, daara: membre.daara, role: 'membre' },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+    res.json({
+      token,
+      membre: {
+        id: membre._id,
+        nom: membre.nom,
+        prenom: membre.prenom,
+        telephone: membre.telephone,
+        role: membre.role,
+        daara: membre.daara
+      }
+    });
   } catch (err) {
     res.status(500).json({ message: 'Erreur serveur', error: err.message });
   }
