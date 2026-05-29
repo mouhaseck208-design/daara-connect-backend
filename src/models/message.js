@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const messageSchema = new mongoose.Schema({
   texte: { type: String, required: true },
-  auteur: { type: mongoose.Schema.Types.ObjectId, ref: 'Membre' }, // ← plus required
+  type: { type: String, default: 'texte' },
+  auteur: { type: mongoose.Schema.Types.ObjectId, ref: 'Membre' },
   kourel: { type: mongoose.Schema.Types.ObjectId, ref: 'Kourel', required: true },
   daara: { type: mongoose.Schema.Types.ObjectId, ref: 'Daara', required: true },
 }, { timestamps: true });
