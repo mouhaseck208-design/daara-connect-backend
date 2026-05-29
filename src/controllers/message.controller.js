@@ -1,11 +1,12 @@
-const Message = require('../models/message'); // ← minuscule
+const Message = require('../models/message');
 
 exports.envoyerMessage = async (req, res) => {
   try {
-    const { texte, auteur, kourel } = req.body;
+    const { texte, auteur, kourel, type } = req.body;
     const message = new Message({
       texte, auteur, kourel,
-      daara: req.user.daara  // ← req.user.daara
+      type: type || 'texte',
+      daara: req.user.daara
     });
     await message.save();
     res.status(201).json({ message: 'Message envoyé ✅', data: message });
